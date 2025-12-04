@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Booking</title>
+</head>
+<body>
+    <h1>Book Room in December</h1>
+    <p>Select days and click Submit</p>
+    <form id="bookingForm">
+        <table border="1">
+            <tr>
+                <td><input type="checkbox" name="day" value="1"> 1</td>
+                <td><input type="checkbox" name="day" value="2"> 2</td>
+                <td><input type="checkbox" name="day" value="3"> 3</td>
+                <td><input type="checkbox" name="day" value="4"> 4</td>
+                <td><input type="checkbox" name="day" value="5"> 5</td>
+                <td><input type="checkbox" name="day" value="6"> 6</td>
+                <td><input type="checkbox" name="day" value="7"> 7</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="day" value="8"> 8</td>
+                <td><input type="checkbox" name="day" value="9"> 9</td>
+                <td><input type="checkbox" name="day" value="10"> 10</td>
+                <td><input type="checkbox" name="day" value="11"> 11</td>
+                <td><input type="checkbox" name="day" value="12"> 12</td>
+                <td><input type="checkbox" name="day" value="13"> 13</td>
+                <td><input type="checkbox" name="day" value="14"> 14</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="day" value="15"> 15</td>
+                <td><input type="checkbox" name="day" value="16"> 16</td>
+                <td><input type="checkbox" name="day" value="17"> 17</td>
+                <td><input type="checkbox" name="day" value="18"> 18</td>
+                <td><input type="checkbox" name="day" value="19"> 19</td>
+                <td><input type="checkbox" name="day" value="20"> 20</td>
+                <td><input type="checkbox" name="day" value="21"> 21</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="day" value="22"> 22</td>
+                <td><input type="checkbox" name="day" value="23"> 23</td>
+                <td><input type="checkbox" name="day" value="24"> 24</td>
+                <td><input type="checkbox" name="day" value="25"> 25</td>
+                <td><input type="checkbox" name="day" value="26"> 26</td>
+                <td><input type="checkbox" name="day" value="27"> 27</td>
+                <td><input type="checkbox" name="day" value="28"> 28</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="day" value="29"> 29</td>
+                <td><input type="checkbox" name="day" value="30"> 30</td>
+                <td><input type="checkbox" name="day" value="31"> 31</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <br>
+        <button type="submit">Submit Booking</button>
+    </form>
+
+    <p id="status"></p>
+
+    <script>
+        const checkboxes = document.getElementsByName('day');
+
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const selectedDays = [];
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selectedDays.push(parseInt(checkboxes[i].value));
+                }
+            }
+
+            const response = await fetch('http://localhost:8080/book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ days: selectedDays })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('status').textContent = 'SUCCESS!';
+            } else {
+                document.getElementById('status').textContent = 'FAILURE!';
+            }
+
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (result.booked.includes(parseInt(checkboxes[i].value))) {
+                    checkboxes[i].disabled = true;
+                    checkboxes[i].checked = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
